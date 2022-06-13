@@ -1943,3 +1943,17 @@ func exportCurl(r Request) []byte {
 	}
 	return []byte(fmt.Sprintf("curl %s -X %s -d %s %s\n", headers, r.Method, shellescape.Quote(r.Data), shellescape.Quote(r.Url+params)))
 }
+func exportCurl(r Request) []byte {
+	var headers, params string
+	for _, header := range strings.Split(r.Headers, "\n") {
+		if header == "" {
+			continue
+		}
+		headers = fmt.Sprintf("%s -H %s", headers, shellescape.Quote(header))
+	}
+	if r.GetParams != "" {
+		params = fmt.Sprintf("?%s", r.GetParams)
+	}
+	return []byte(fmt.Sprintf("curl %s -X %s -d %s %s\n", headers, r.Method, shellescape.Quote(r.Data), shellescape.Quote(r.Url+params)))
+}
+
